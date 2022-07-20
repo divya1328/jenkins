@@ -1,0 +1,230 @@
+Jenkins Declarative Pipeline Syntax
+In this section, we will look at the most commonly used Jenkins declarative pipeline examples or syntax. Typically, declarative pipelines contain one or more declarative steps or directives, as explained below.
+
+pipeline
+
+Entire Declarative pipeline script should be written inside the pipeline block. It’s a mandatory block.
+
+pipeline {
+}
+ 
+pipeline {
+}
+agent
+Specify where the Jenkins build job should run. agent can be at pipeline level or stage level. It’s mandatory to define an agent.
+
+Possible values-
+
+any – Run Job or Stage on any available agent.
+pipeline {
+     agent any
+}
+
+
+pipeline {
+     agent any
+}
+none – Don’t allocate any agent globally for the pipeline. Every stage should specify their own agent to run.
+pipeline {
+     agent none
+}	
+
+3
+pipeline {
+     agent none
+} 
+label – Run the job in agent which matches the label given here. Remember Jenkins CI/CD can work on Master/Agent architecture. Master nodes can delegate the jobs to run in Agent nodes. Nodes on creation given a name & label to identify them later.
+E.g All linux nodes can be labeled as linux-machine
+
+pipeline {
+       agent {
+           label 'linux-machine'
+       }
+}
+1
+2
+3
+4
+5
+pipeline {
+       agent {
+           label 'linux-machine'
+       }
+}
+docker – Run the job in given Docker container
+A sample can be found here at GitHub.
+
+stages
+stages block constitutes different executable stage blocks. At least one stage block is mandatory inside stages block.
+
+pipeline {
+       agent {
+           label 'linux-machine'
+       }
+     stages {
+     }
+}
+
+
+pipeline {
+       agent {
+           label 'linux-machine'
+       }
+     stages {
+     }
+}
+stage
+stage block contains the actual execution steps. Stage block has to be defined within stages block. It’s mandatory to have at least one stage block inside the stage block. Also its mandatory to name each stage block & this name will be shown in the Stage View after we run the job.
+
+In below example, the stage is named as “build step”
+
+pipeline {
+       agent {
+           label 'linux-machine'
+       }
+     stages {
+         stage('build step') {
+         }
+     }
+}
+ 
+pipeline {
+       agent {
+           label 'linux-machine'
+       }
+     stages {
+         stage('build step') {
+         }
+     }
+}
+A sample can be found here at GitHub.
+
+steps
+steps block contains the actual build step. It’s mandatory to have at least one step block inside a stage block.
+
+Depending on the Agent’s operating system (where Jenkins job runs), we can use shell, bat, etc., inside the steps command.
+
+pipeline {
+     agent any
+     stages {
+         stage('build step') {
+              steps {
+                 echo "Build stage is running"
+              }
+         }
+     }
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+pipeline {
+     agent any
+     stages {
+         stage('build step') {
+              steps {
+                 echo "Build stage is running"
+              }
+         }
+     }
+}
+Scripted Pipeline in Jenkins job
+
+Sample can be found here at GitHub.
+
+parameters
+The parameters directive provides a way for Jenkins job to interact with Jenkins CI/CD users during the running of the build job.
+
+parameter can be of the following types – string, text, booleanParam, choice & password
+
+string – Accepts a value of String type from Jenkins user.
+
+E.g.
+string(name: ‘NAME’, description: ‘Please tell me your name?’)
+
+text – Accepts multi line value from Jenkins user
+E.g.
+text(name: ‘DESC’, description: ‘Describe about the job details’)
+
+booleanParam – Accepts a true/false value from Jenkins user
+E.g.
+booleanParam(name: ‘SKIP_TEST’, description: ‘Want to skip running Test cases?’)
+
+choice – Jenkins user can choose one among the choices of value provided
+E.g.
+choice(name: ‘BRANCH’, choices: [‘Master’, ‘Dev’], description: ‘Choose the branch’)
+
+password – Accepts a secret like password from Jenkins user
+E.g.
+password(name: ‘SONAR_SERVER_PWD’, description: ‘Enter SONAR password’)
+
+Let’s look at a sample on how to use parameters directive-
+
+pipeline {
+    agent any
+    parameters {
+        string(name: 'NAME', description: 'Please tell me your name?')
+
+        text(name: 'DESC', description: 'Describe about the job details')
+
+        booleanParam(name: 'SKIP_TEST', description: 'Want to skip running Test cases?')
+
+        choice(name: 'BRANCH', choices: ['Master', 'Dev'], description: 'Choose branch')
+
+        password(name: 'SONAR_SERVER_PWD', description: 'Enter SONAR password')
+    }
+    stages {
+        stage('Printing Parameters') {
+            steps {
+                echo "Hello ${params.NAME}"
+
+                echo "Job Details: ${params.DESC}"
+
+                echo "Skip Running Test case ?: ${params.SKIP_TEST}"
+
+                echo "Branch Choice: ${params.BRANCH}"
+
+                echo "SONAR Password: ${params.SONAR_SERVER_PWD}"
+            }
+        }
+    }
+}
+
+
+Let’s look at a sample on how to use parameters directive-
+
+pipeline {
+    agent any
+    parameters {
+        string(name: 'NAME', description: 'Please tell me your name?')
+ 
+        text(name: 'DESC', description: 'Describe about the job details')
+ 
+        booleanParam(name: 'SKIP_TEST', description: 'Want to skip running Test cases?')
+ 
+        choice(name: 'BRANCH', choices: ['Master', 'Dev'], description: 'Choose branch')
+ 
+        password(name: 'SONAR_SERVER_PWD', description: 'Enter SONAR password')
+    }
+    stages {
+        stage('Printing Parameters') {
+            steps {
+                echo "Hello ${params.NAME}"
+ 
+                echo "Job Details: ${params.DESC}"
+ 
+                echo "Skip Running Test case ?: ${params.SKIP_TEST}"
+ 
+                echo "Branch Choice: ${params.BRANCH}"
+ 
+                echo "SONAR Password: ${params.SONAR_SERVER_PWD}"
+            }
+        }
+    }
+}
